@@ -3,6 +3,8 @@ from matplotlib import pyplot as plt
 from bs4 import BeautifulSoup
 import requests
 
+# To Do: Separate into multiple methods for each piece of functionality.
+
 def chartStocks(*tickers):
 
     # Run loop for each ticker passed in as an argument
