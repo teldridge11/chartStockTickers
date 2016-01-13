@@ -6,6 +6,34 @@ import requests
 # To Do: Separate into multiple methods for each piece of functionality.
 
 def chartStocks(*tickers):
+    for ticker in tickers:
+        chartStock(ticker)
+        
+def findCSVUrl(soupPage):
+    CSV_URL_PREFIX = 'http://real-chart.finance.yahoo.com/table.csv?s='
+    for link in soupPage.findAll('a'):
+        href = link.get('href', '')
+        if href.startswith(CSV_URL_PREFIX):
+            return href
+            
+for line in lines[1:]:
+    
+def parseCSV(csv_text):
+    csv_rows = csv.reader(csv_text.split('\n'))
+
+    points = [float(row[4]) for row in csv_rows]
+    days = list(range(len(points)))
+
+    return days, points
+    
+def chartStock(ticker):
+    # Single chart stock method
+    
+    
+    
+    
+
+def chartStocks(*tickers):
 
     # Run loop for each ticker passed in as an argument
     for ticker in tickers:
