@@ -2,6 +2,7 @@ import urllib.request
 from matplotlib import pyplot as plt
 from bs4 import BeautifulSoup
 import requests
+import collections
 
 # Loop to chart multiple stocks
 def chartStocks(*tickers):
@@ -17,27 +18,37 @@ def chartStock(ticker):
 # Find the CSV URL        
 def findCSV(soupPage):
     CSV_URL_PREFIX = 'http://real-chart.finance.yahoo.com/table.csv?s='
-    for link in soupPage.findAll('a'):
+    links = soupPage.findAll('a')
+    for link in links:
         href = link.get('href', '')
         if href.startswith(CSV_URL_PREFIX):
             return href
-            
-for line in lines[1:]:
     
 # Parse CSV for daily prices
 def parseCSV(csv_text):
     csv_rows = csv.reader(csv_text.split('\n'))
 
-    points = [float(row[4]) for row in csv_rows]
-    days = list(range(len(points)))
+    prices = [float(row[4]) for row in csv_rows]
+    days = list(range(len(prices)))
+    point = collections.namedtuple('Point', ['x', 'y'])
 
-    return days, points
-    
+    for price in prices:
+        i = 0
+        p = point(days[i], prices[i])
+        points = []
+        points.append(p)
 
-    
+    return points
+
+# Plot the data
+def plotStock(ticker, points):
+    plt.plot(points)
+    plt.ylabel(ticker)
+    plt.show()
 
 
-    
+chartStocks('AAPL')
+
     
     
 
