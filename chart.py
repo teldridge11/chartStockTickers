@@ -3,13 +3,19 @@ from matplotlib import pyplot as plt
 from bs4 import BeautifulSoup
 import requests
 
-# To Do: Separate into multiple methods for each piece of functionality.
-
+# Loop to chart multiple stocks
 def chartStocks(*tickers):
     for ticker in tickers:
         chartStock(ticker)
         
-def findCSVUrl(soupPage):
+# Single chart stock method
+def chartStock(ticker):
+    url = "http://finance.yahoo.com/q/hp?s=" + str(ticker) + "+Historical+Prices"
+    csv = findCSV(url)
+    parseCSV(csv)
+
+# Find the CSV URL        
+def findCSV(soupPage):
     CSV_URL_PREFIX = 'http://real-chart.finance.yahoo.com/table.csv?s='
     for link in soupPage.findAll('a'):
         href = link.get('href', '')
@@ -18,6 +24,7 @@ def findCSVUrl(soupPage):
             
 for line in lines[1:]:
     
+# Parse CSV for daily prices
 def parseCSV(csv_text):
     csv_rows = csv.reader(csv_text.split('\n'))
 
@@ -26,9 +33,10 @@ def parseCSV(csv_text):
 
     return days, points
     
-def chartStock(ticker):
-    # Single chart stock method
+
     
+
+
     
     
     
