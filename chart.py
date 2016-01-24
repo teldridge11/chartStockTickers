@@ -46,12 +46,6 @@ def plotStock(ticker, points):
     plt.ylabel(ticker)
     plt.show()
 
-
-chartStocks('AAPL')
-
-    
-    
-
 def chartStocks(*tickers):
 
     # Run loop for each ticker passed in as an argument
