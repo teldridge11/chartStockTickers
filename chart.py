@@ -3,6 +3,7 @@ from matplotlib import pyplot as plt
 from bs4 import BeautifulSoup
 import requests
 import collections
+import csv
 
 # Loop to chart multiple stocks
 def chartStocks(*tickers):
@@ -12,7 +13,10 @@ def chartStocks(*tickers):
 # Single chart stock method
 def chartStock(ticker):
     url = "http://finance.yahoo.com/q/hp?s=" + str(ticker) + "+Historical+Prices"
-    csv = findCSV(url)
+    sourceCode = requests.get(url)
+    plainText = sourceCode.text
+    soup = BeautifulSoup(plainText, "html.parser")
+    csv = findCSV(soup)
     parseCSV(csv)
 
 # starsWith error
@@ -39,12 +43,11 @@ def parseCSV(csv_text):
         points = []
         points.append(p)
 
-    return points
+    plotStock(points)
 
 # Plot the data
-def plotStock(ticker, points):
+def plotStock(points):
     plt.plot(points)
-    plt.ylabel(ticker)
     plt.show()
 
 def chartStocks(*tickers):
