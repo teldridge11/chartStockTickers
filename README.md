@@ -1,4 +1,4 @@
-# GraphStockTickers
+# ChartStockTickers
 Python web crawler that charts stock ticker data
 
-Requires Python, BeautifulSoup, urllib.request, requests, and Matplotlib
+Requires Python, BeautifulSoup, requests, and Matplotlib
