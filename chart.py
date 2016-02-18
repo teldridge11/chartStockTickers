@@ -3,7 +3,6 @@ from matplotlib import pyplot as plt
 from bs4 import BeautifulSoup
 import requests
 import collections
-import csv
 
 # Loop to chart multiple stocks
 def chartStocks(*tickers):
@@ -17,7 +16,7 @@ def chartStock(ticker):
     plainText = sourceCode.text
     soup = BeautifulSoup(plainText, "html.parser")
     csv = findCSV(soup)
-    parseCSV(csv)
+    parseCSV(ticker, csv)
 
 # starsWith error
 # Find the CSV URL        
@@ -30,23 +29,42 @@ def findCSV(soupPage):
             return href
     
 # Parse CSV for daily prices
-def parseCSV(csv_text):
-    csv_rows = csv.reader(csv_text.split('\n'))
-
-    prices = [float(row[4]) for row in csv_rows]
-    days = list(range(len(prices)))
-    point = collections.namedtuple('Point', ['x', 'y'])
-
-    for price in prices:
-        i = 0
-        p = point(days[i], prices[i])
-        points = []
-        points.append(p)
-
-    plotStock(points)
+def parseCSV(ticker, csv_url):
+    sourceCode = requests.get(csv_url)
+    csv_text = sourceCode.text
+    point = []
+    points = []
+    curDay = 0
+    day = []
+    commas = 0               
+    lines = csv_text.split("\n")
+    lineOne = True
+    for line in lines:
+        commas = 0
+        if lineOne == True:
+            lineOne = False
+        else:
+            for c in line:
+                if c == ",":
+                    commas += 1
+                if commas == 4:
+                    point.append(c)
+                elif commas == 5:
+                    for x in point:
+                        if x == ",":
+                            point.remove(x)
+                    point = ''.join(point)
+                    point = float(point)
+                    points.append(point)
+                    day.append(curDay)
+                    curDay += 1
+                    point = []
+                    commas = 0
+    points = list(reversed(points))
+    plotStock(ticker, points)
 
 # Plot the data
-def plotStock(points):
+def plotStock(ticker, points):
     plt.plot(points)
+    plt.ylabel(ticker)
     plt.show()
-
