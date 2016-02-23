@@ -11,7 +11,7 @@ def chartStocks(*tickers):
     for ticker in tickers:
         chartStock(ticker)
         
-# Single chart stock method
+# Convert each stock's URL into HTML
 def chartStock(ticker):
     url = "http://finance.yahoo.com/q/hp?s=" + str(ticker) + "+Historical+Prices"
     sourceCode = requests.get(url)
@@ -20,7 +20,7 @@ def chartStock(ticker):
     csv = findCSV(soup)
     parseCSV(ticker, csv)
 
-# Find the CSV URL        
+# Look through HTML to find CSV URL      
 def findCSV(soupPage):
     CSV_URL_PREFIX = 'http://real-chart.finance.yahoo.com/table.csv?s='
     links = soupPage.findAll('a')
@@ -29,6 +29,7 @@ def findCSV(soupPage):
         if href.startswith(CSV_URL_PREFIX):
             return href
 
+# Parse CSV to create array of prices
 def parseCSV(ticker, csv_url):
     response = urlopen(csv_url)
     reader = csv.reader(response.read().decode('utf-8').splitlines())
