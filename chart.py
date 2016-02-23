@@ -18,7 +18,6 @@ def chartStock(ticker):
     csv = findCSV(soup)
     parseCSV(ticker, csv)
 
-# starsWith error
 # Find the CSV URL        
 def findCSV(soupPage):
     CSV_URL_PREFIX = 'http://real-chart.finance.yahoo.com/table.csv?s='
