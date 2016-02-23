@@ -31,11 +31,8 @@ def findCSV(soupPage):
 def parseCSV(ticker, csv_url):
     sourceCode = requests.get(csv_url)
     csv_text = sourceCode.text
-    point = []
-    points = []
-    curDay = 0
-    day = []
-    commas = 0               
+    point, points, day = []
+    curDay, commas = 0
     lines = csv_text.split("\n")
     lineOne = True
     for line in lines:
