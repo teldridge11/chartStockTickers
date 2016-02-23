@@ -1,8 +1,10 @@
-import urllib.request
+import urllib
+from urllib.request import urlopen
 from matplotlib import pyplot as plt
 from bs4 import BeautifulSoup
 import requests
 import collections
+import csv
 
 # Loop to chart multiple stocks
 def chartStocks(*tickers):
@@ -26,41 +28,18 @@ def findCSV(soupPage):
         href = link.get('href', '')
         if href.startswith(CSV_URL_PREFIX):
             return href
-    
-# Parse CSV for daily prices
+
 def parseCSV(ticker, csv_url):
-    sourceCode = requests.get(csv_url)
-    csv_text = sourceCode.text
-    point = []
+    response = urlopen(csv_url)
+    reader = csv.reader(response.read().decode('utf-8').splitlines())
+    csv_rows = [row for row in reader]
+    prices = [row[4] for row in csv_rows if len(row) > 4]
     points = []
-    day = []
-    curDay = 0
-    commas = 0
-    lines = csv_text.split("\n")
-    lineOne = True
-    for line in lines:
-        commas = 0
-        if lineOne == True:
-            lineOne = False
-        else:
-            for c in line:
-                if c == ",":
-                    commas += 1
-                if commas == 4:
-                    point.append(c)
-                elif commas == 5:
-                    for x in point:
-                        if x == ",":
-                            point.remove(x)
-                    point = ''.join(point)
-                    point = float(point)
-                    points.append(point)
-                    day.append(curDay)
-                    curDay += 1
-                    point = []
-                    commas = 0
-    points = list(reversed(points))
-    plotStock(ticker, points)
+    i = 0
+    for price in prices[1:]:
+        points.append(price)
+        i += 1
+    plotStock(ticker, points[::-1])
 
 # Plot the data
 def plotStock(ticker, points):
